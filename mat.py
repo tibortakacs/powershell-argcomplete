@@ -82,14 +82,8 @@ def main():
     # Create the command line parser
     parser = create_mat_command_line()
 
-    # The argcomplete.autocomplete logic is slightly more complected now:
-    # * Check for the environment variable which is set in the mat.complete.ps1 script
-    # * If it is set, use stdout as output stream since PowerShell processes that one.
-    # * Otherwise, just use the default settings
-    output_stream=None
-    if "_ARGCOMPLETE_POWERSHELL" in os.environ:
-        output_stream = sys.stdout.buffer
-    argcomplete.autocomplete(parser, output_stream=output_stream)
+    # Call autocomplete
+    argcomplete.autocomplete(parser)
 
     # Do the parsing (after the completion!)
     options = parser.parse_args()

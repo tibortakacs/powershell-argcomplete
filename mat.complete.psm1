@@ -29,8 +29,8 @@ $MatArgCompleteScriptBlock = {
     New-Item -Path Env: -Name COMP_POINT -Value $cursorPosition | Out-Null # Refers to the last character of the current line
     New-Item -Path Env: -Name COMP_LINE -Value $line | Out-Null # Current line
 
-    # Set a special environment variable to mark that the completion is executed by PowerShell
-    New-Item -Path Env: -Name _ARGCOMPLETE_POWERSHELL -Value 1 | Out-Null
+    # Set an environment variable to specify the output stream file descriptor used by argcomplete for stdout
+    New-Item -Path Env: -Name _ARGCOMPLETE_OSTREAM_FD -Value 1 | Out-Null
 
     # Just call the script without any parameter
     # Since the environment variables are set, the argcomplete.autocomplete(...) function will be executed.
@@ -46,7 +46,7 @@ $MatArgCompleteScriptBlock = {
     Remove-Item Env:\COMP_POINT | Out-Null
     Remove-Item Env:\COMP_LINE | Out-Null
     
-    Remove-Item Env:\_ARGCOMPLETE_POWERSHELL | Out-Null
+    Remove-Item Env:\_ARGCOMPLETE_OSTREAM_FD | Out-Null
     
     # If there is only one completion item, it will be immediately used. In this case
     # a trailing space is important to show the user that the complition for the current

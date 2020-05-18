@@ -1,0 +1,3 @@
+[submodule "argcomplete"]
+	path = argcomplete
+	url = git@github.com:tibortakacs/argcomplete.git
