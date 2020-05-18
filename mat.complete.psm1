@@ -6,18 +6,17 @@ Function mat {
 }
 
 $MatArgCompleteScriptBlock = {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    param($wordToComplete, $commandAst, $cursorPosition)
 
     # In case of scripts, this object hold the current line after string conversion
-    $line = "$parameterName"
-    $compPoint = $wordToComplete
+    $line = "$commandAst"
 
     # The behaviour of completion should depend on the trailing spaces in the current line:
     # * "command subcommand " --> TAB --> Completion items parameters/sub-subcommands of "subcommand"
     # * "command subcom" --> TAB --> Completion items to extend "subcom" into matching subcommands.
-    # $line never contains the trailing spaces. However, $lineFullLength is the length of the original
-    # line (with trailing spaces). This comparision allows the expected user experience.
-    if ($compPoint -gt $line.Length) {
+    # $line never contains the trailing spaces. However, $cursorPosition is the length of the original
+    # line (with trailing spaces) in this case. This comparision allows the expected user experience.
+    if ($cursorPosition -gt $line.Length) {
         $line = "$line "
     }
 
@@ -27,7 +26,7 @@ $MatArgCompleteScriptBlock = {
     New-Item -Path Env: -Name _ARGCOMPLETE_IFS -Value " " | Out-Null # Separator of the items
     New-Item -Path Env: -Name _ARGCOMPLETE_SUPPRESS_SPACE -Value 1 | Out-Null # Constant
     New-Item -Path Env: -Name _ARGCOMPLETE_COMP_WORDBREAKS -Value "" | Out-Null # Constant
-    New-Item -Path Env: -Name COMP_POINT -Value $compPoint | Out-Null # Refers to the last character of the current line
+    New-Item -Path Env: -Name COMP_POINT -Value $cursorPosition | Out-Null # Refers to the last character of the current line
     New-Item -Path Env: -Name COMP_LINE -Value $line | Out-Null # Current line
 
     # Set a special environment variable to mark that the completion is executed by PowerShell
@@ -62,7 +61,7 @@ $MatArgCompleteScriptBlock = {
 }
 
 # Register tab completion for the mat command
-Register-ArgumentCompleter -CommandName $MatCommandAlias -ScriptBlock $MatArgCompleteScriptBlock
+Register-ArgumentCompleter -Native -CommandName $MatCommandAlias -ScriptBlock $MatArgCompleteScriptBlock
 
 # Export
 Export-ModuleMember -Function mat
