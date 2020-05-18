@@ -63,3 +63,7 @@ $MatArgCompleteScriptBlock = {
 
 # Register tab completion for the mat command
 Register-ArgumentCompleter -CommandName $MatCommandAlias -ScriptBlock $MatArgCompleteScriptBlock
+
+# Export
+Export-ModuleMember -Function mat
+# Export-ModuleMember -Variable $MatArgCompleteScriptBlock
