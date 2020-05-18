@@ -10,24 +10,24 @@ $MatArgCompleteScriptBlock = {
 
     # In case of scripts, this object hold the current line after string conversion
     $line = "$parameterName"
-    $lineFullLength = $wordToComplete
+    $compPoint = $wordToComplete
 
     # The behaviour of completion should depend on the trailing spaces in the current line:
     # * "command subcommand " --> TAB --> Completion items parameters/sub-subcommands of "subcommand"
     # * "command subcom" --> TAB --> Completion items to extend "subcom" into matching subcommands.
     # $line never contains the trailing spaces. However, $lineFullLength is the length of the original
     # line (with trailing spaces). This comparision allows the expected user experience.
-    if ($lineFullLength -gt $line.Length) {
+    if ($compPoint -gt $line.Length) {
         $line = "$line "
     }
 
     # Mock bash with environment variable settings
-    New-Item -Path Env: -Name _ARGCOMPLETE -Value 1  | Out-Null # Enables tab complition in argcomplete
-    New-Item -Path Env: -Name COMP_TYPE -Value 9  | Out-Null # Constant
-    New-Item -Path Env: -Name _ARGCOMPLETE_IFS -Value " "  | Out-Null # Separator of the items
-    New-Item -Path Env: -Name _ARGCOMPLETE_SUPPRESS_SPACE -Value 1  | Out-Null # Constant
-    New-Item -Path Env: -Name _ARGCOMPLETE_COMP_WORDBREAKS -Value ""  | Out-Null # Constant
-    New-Item -Path Env: -Name COMP_POINT -Value $line.Length  | Out-Null # Refers to the last character of the current line
+    New-Item -Path Env: -Name _ARGCOMPLETE -Value 1 | Out-Null # Enables tab complition in argcomplete
+    New-Item -Path Env: -Name COMP_TYPE -Value 9 | Out-Null # Constant
+    New-Item -Path Env: -Name _ARGCOMPLETE_IFS -Value " " | Out-Null # Separator of the items
+    New-Item -Path Env: -Name _ARGCOMPLETE_SUPPRESS_SPACE -Value 1 | Out-Null # Constant
+    New-Item -Path Env: -Name _ARGCOMPLETE_COMP_WORDBREAKS -Value "" | Out-Null # Constant
+    New-Item -Path Env: -Name COMP_POINT -Value $compPoint | Out-Null # Refers to the last character of the current line
     New-Item -Path Env: -Name COMP_LINE -Value $line | Out-Null # Current line
 
     # Set a special environment variable to mark that the completion is executed by PowerShell
