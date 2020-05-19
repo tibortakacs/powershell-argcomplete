@@ -76,22 +76,13 @@ New-Item -Path Env: -Name COMP_LINE -Value $line | Out-Null # Current line
 `argcomplete` uses these variables as input to determine the completion suggestions.
 
 4. `argcomplete` writes the result into an output stream.  Per default, it uses file
-descriptor `8` which is not supported by Powershell.  Instead, `mat.py` scripts changes
-the output stream to `stdout`.  However, this change would break the bash experience.
-Therefore, a new environment variable has been introduced to specify that the completion
-is triggered by PowerShell:
+descriptor `8` which is not supported by Powershell.  In order to fill this gap, the
+new `_ARGCOMPLETE_OSTREAM_FD` has been introduced [here](https://github.com/tibortakacs/argcomplete/blob/f51a8efcfbe58fda54f70216e978d9043daac458/argcomplete/__init__.py#L188).  If this variable exists, it specifies the file descriptor of the
+output stream used by `argcomplete`.  The PowerShell script sets up this variable for
+`stdout`, while bash does not touch it, so the original behaviour is also kept:
 
 ```powershell
-New-Item -Path Env: -Name _ARGCOMPLETE_POWERSHELL -Value 1 | Out-Null
-```
-
-This environment variable is used in `mat.py`:
-
-```python
-output_stream=None
-if "_ARGCOMPLETE_POWERSHELL" in os.environ:
-    output_stream = sys.stdout.buffer
-argcomplete.autocomplete(parser, output_stream=output_stream)
+New-Item -Path Env: -Name _ARGCOMPLETE_OSTREAM_FD -Value 1 | Out-Null
 ```
 
 5. Finally, the script just executes the original command.  Due to the set environment
